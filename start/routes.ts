@@ -18,19 +18,22 @@
 |
 */
 
+import Token from 'App/Models/token'
+import Hash from '@ioc:Adonis/Core/Hash'
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.resource('posts', 'PostsController').apiOnly();
 
-Route.resource('posts.comments', 'CommentsController').apiOnly();
+Route.group(() => {
+  Route.resource('posts', 'PostsController').apiOnly()
 
-
-import Token from 'App/Models/token'
-import Hash from '@ioc:Adonis/Core/Hash'
+  Route.resource('posts.comments', 'CommentsController')
+  .apiOnly();
+  
+}).middleware('auth')
 
 Route.post('login', async ({ auth, request, response }) => {
   const email = request.input('email')
